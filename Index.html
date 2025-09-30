@@ -1,1 +1,355 @@
+<!--
+  Portfolio Website - Single File (HTML / CSS / JS)
+  Personalized for: Nafiul Islam
+  How to use:
+    - Save this file as `index.html` and open in a browser.
+    - Replace placeholder texts, project links, images, and contact details.
+    - No build step required. Works offline.
 
+  Features:
+    - Modern, responsive layout (mobile-first)
+    - Accessible navigation & skip link
+    - Dark / Light mode with localStorage persistence
+    - Smooth scroll, animated entrance, responsive grid for projects
+    - Contact form uses mailto fallback and client-side validation
+-->
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Nafiul Islam — Portfolio</title>
+  <meta name="description" content="Portfolio of Nafiul Islam — developer, designer, and problem solver.">
+  <meta name="author" content="Nafiul Islam">
+  <link rel="icon" href="data:;base64,iVBORw0KGgo="> <!-- tiny placeholder -->
+
+  <style>
+    :root{
+      --bg: #0f1724; /* dark navy */
+      --card: #0b1220;
+      --muted: #94a3b8;
+      --accent: #7c3aed; /* violet */
+      --glass: rgba(255,255,255,0.04);
+      --radius: 14px;
+      color-scheme: dark;
+      --max-width: 1100px;
+    }
+    [data-theme='light']{
+      --bg: #f7f8fc;
+      --card: #ffffff;
+      --muted: #51606a;
+      --accent: #6b21a8;
+      --glass: rgba(11,18,32,0.04);
+      color-scheme: light;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+      background: radial-gradient(1200px 600px at 10% 10%, rgba(124,58,237,0.08), transparent), var(--bg);
+      color: #e6eef8;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      padding:24px 16px;
+      display:flex;justify-content:center;
+    }
+
+    .container{width:100%;max-width:var(--max-width);}
+
+    /* Header / Nav */
+    header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:28px}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{
+      width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--accent),transparent);display:grid;place-items:center;font-weight:700;color:white;box-shadow:0 6px 18px rgba(2,6,23,0.6);
+    }
+    .brand h1{font-size:18px;margin:0}
+    nav{display:flex;gap:12px;align-items:center}
+    nav a{color:var(--muted);text-decoration:none;padding:8px 12px;border-radius:10px;font-size:14px}
+    nav a:hover{color:var(--card);background:var(--glass)}
+
+    .controls{display:flex;gap:10px;align-items:center}
+    .btn{cursor:pointer;border:0;padding:8px 12px;border-radius:10px;background:transparent;color:var(--muted);font-weight:600}
+    .btn.primary{background:linear-gradient(90deg,var(--accent),#4f46e5);color:white;box-shadow:0 6px 20px rgba(79,70,229,0.12)}
+
+    /* Hero */
+    .hero{display:grid;grid-template-columns:1fr;gap:20px;align-items:center;padding:28px;border-radius:var(--radius);background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);box-shadow:0 8px 30px rgba(2,6,23,0.6);}
+    .hero-top{display:flex;gap:18px;align-items:center}
+    .avatar{width:120px;height:120px;border-radius:16px;background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));display:grid;place-items:center;font-size:42px;font-weight:700}
+    .intro h2{margin:0;font-size:24px}
+    .intro p{margin:6px 0 0;color:var(--muted);max-width:60ch}
+
+    .cta-group{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+
+    /* Sections */
+    section{margin-top:28px}
+    .card{background:var(--card);padding:18px;border-radius:14px;box-shadow:0 6px 20px rgba(2,6,23,0.6)}
+    h3{margin:0 0 10px 0}
+
+    /* Projects grid */
+    .projects-grid{display:grid;grid-template-columns:repeat(1,1fr);gap:14px}
+    .project{padding:14px;border-radius:12px;background:linear-gradient(90deg, rgba(255,255,255,0.02), transparent);display:flex;flex-direction:column;gap:8px}
+    .project .meta{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted)}
+    .project p{margin:0;color:var(--muted)}
+
+    /* Skills */
+    .skills{display:flex;gap:8px;flex-wrap:wrap}
+    .skill{padding:8px 10px;border-radius:999px;background:var(--glass);font-weight:600;color:var(--muted);font-size:13px}
+
+    /* Contact */
+    .contact-grid{display:grid;grid-template-columns:1fr;gap:12px}
+    label{display:block;font-size:13px;margin-bottom:6px}
+    input,textarea{width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit}
+    .muted{color:var(--muted);font-size:14px}
+
+    footer{margin:34px 0 18px;text-align:center;color:var(--muted);font-size:13px}
+
+    /* Responsive */
+    @media(min-width:720px){
+      .hero{grid-template-columns:1fr 1fr}
+      .projects-grid{grid-template-columns:repeat(2,1fr)}
+      .contact-grid{grid-template-columns:2fr 1fr}
+    }
+    @media(min-width:1024px){
+      nav a{font-size:15px}
+      .projects-grid{grid-template-columns:repeat(3,1fr)}
+    }
+
+    /* small niceties */
+    a.link{color:inherit;text-decoration:underline}
+    .fade-in{opacity:0;transform:translateY(6px);animation:enter 600ms ease forwards}
+    @keyframes enter{to{opacity:1;transform:none}}
+
+    /* skip link */
+    .skip{position:absolute;left:-999px;top:auto;width:1px;height:1px;overflow:hidden}
+    .skip:focus{left:16px;top:16px;width:auto;height:auto;padding:8px 12px;background:#111;color:white;border-radius:8px}
+
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="logo">NI</div>
+        <div>
+          <h1>Nafiul Islam</h1>
+          <div class="muted">Developer · Designer · Problem Solver</div>
+        </div>
+      </div>
+
+      <nav aria-label="Main navigation">
+        <a href="#about">About</a>
+        <a href="#projects">Projects</a>
+        <a href="#skills">Skills</a>
+        <a href="#contact">Contact</a>
+      </nav>
+
+      <div class="controls">
+        <button class="btn" id="downloadResume">Resume</button>
+        <button class="btn" id="themeToggle" aria-pressed="false" title="Toggle theme">🌙</button>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero card" aria-labelledby="hero-title">
+        <div class="hero-top fade-in">
+          <div class="avatar">NI</div>
+          <div class="intro">
+            <h2 id="hero-title">Hi — I'm <span id="name">Nafiul Islam</span>.</h2>
+            <p>I build web apps and delightful user experiences. I like clean interfaces, small performance budgets, and readable code. Located in Dhaka, Bangladesh.</p>
+
+            <div class="cta-group">
+              <a class="btn primary" href="#contact">Hire me</a>
+              <a class="btn" href="#projects">See projects</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="fade-in" style="align-self:center">
+          <div class="card" style="background:transparent;padding:16px">
+            <h3>Selected Work</h3>
+            <p class="muted">A few projects that show my range — front-end, full-stack and design systems.</p>
+            <ul style="margin:12px 0 0;padding-left:18px;color:var(--muted)">
+              <li><strong>Project A</strong> — Responsive web app with real-time features.</li>
+              <li><strong>Project B</strong> — Design system and component library.</li>
+              <li><strong>Project C</strong> — Performance-first landing page and analytics.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="about" class="card">
+        <h3>About</h3>
+        <p class="muted">I'm a software developer focused on building modern, accessible, and maintainable web applications. I enjoy collaborating with cross-functional teams and turning complex problems into simple, elegant solutions. When I'm not coding I read books, sketch UI ideas, or practice photography.</p>
+      </section>
+
+      <section id="projects" class="card">
+        <h3>Projects</h3>
+        <div class="projects-grid" id="projectsGrid">
+          <!-- Project cards generated by JS. Replace content with your projects. -->
+        </div>
+      </section>
+
+      <section id="skills" class="card">
+        <h3>Skills</h3>
+        <div class="skills" id="skillsList">
+          <!-- Skills from JS -->
+        </div>
+      </section>
+
+      <section id="contact" class="card">
+        <h3>Contact</h3>
+        <div class="contact-grid">
+          <div>
+            <p class="muted">Want to work together? Send a message or email me directly at <a class="link" href="mailto:your.email@example.com">your.email@example.com</a>. I'll normally respond within a few days.</p>
+
+            <form id="contactForm" novalidate>
+              <label for="nameInput">Your name</label>
+              <input id="nameInput" name="name" required placeholder="Your full name">
+
+              <label for="emailInput">Email</label>
+              <input id="emailInput" name="email" type="email" required placeholder="you@example.com">
+
+              <label for="messageInput">Message</label>
+              <textarea id="messageInput" name="message" rows="6" required placeholder="Tell me about your project..."></textarea>
+
+              <div style="margin-top:10px;display:flex;gap:8px;">
+                <button type="submit" class="btn primary">Send message</button>
+                <button type="reset" class="btn">Reset</button>
+              </div>
+            </form>
+
+          </div>
+
+          <div>
+            <div class="card" style="padding:12px">
+              <h4 style="margin-top:0">Get in touch</h4>
+              <p class="muted">Location: Dhaka, Bangladesh<br>Timezone: Asia/Dhaka</p>
+              <p style="margin-top:12px">
+                <strong>Availability:</strong> Open to freelance & full-time opportunities.
+              </p>
+
+              <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
+                <a class="btn" href="#" aria-label="GitHub">GitHub</a>
+                <a class="btn" href="#" aria-label="LinkedIn">LinkedIn</a>
+                <a class="btn" href="#" aria-label="Twitter">X</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <footer>
+      © <span id="year"></span> <span id="footName">Nafiul Islam</span> — Built with care. 
+    </footer>
+  </div>
+
+  <script>
+    // Personalize: replace these with your real values
+    const PROFILE = {
+      name: 'Nafiul Islam',
+      email: 'your.email@example.com',
+      location: 'Dhaka, Bangladesh',
+      projects: [
+        {title: 'Realtime Chat App', desc: 'A websocket-based chat app with rooms and presence.', tech: ['Node.js','Socket.io','React'], url:'#'},
+        {title: 'Design System', desc: 'Reusable component library with Figma tokens and Storybook.', tech: ['CSS','Storybook','Figma'], url:'#'},
+        {title: 'Marketing Site', desc: 'SEO-focused landing page with analytics and A/B testing.', tech: ['HTML','JS','Netlify'], url:'#'},
+        {title: 'E-commerce POC', desc: 'Serverless checkout flow with payments integration.', tech: ['AWS','Stripe','React'], url:'#'},
+        {title: 'Performance Boilerplate', desc: 'Minimal, fast starter template with best practices.', tech: ['Vanilla JS','Lighthouse'], url:'#'},
+        {title: 'Portfolio Redesign', desc: 'This very site — simple, responsive and accessible.', tech: ['HTML','CSS','JS'], url:'#'}
+      ],
+      skills: ['HTML','CSS','JavaScript','React','Node.js','Accessibility','Performance','UI/UX','Git']
+    };
+
+    // Inject basic content
+    document.getElementById('name').textContent = PROFILE.name;
+    document.getElementById('footName').textContent = PROFILE.name;
+    document.getElementById('year').textContent = new Date().getFullYear();
+    document.querySelector('a[href^="mailto:"]')?.setAttribute('href', 'mailto:' + PROFILE.email);
+
+    const projectsGrid = document.getElementById('projectsGrid');
+    PROFILE.projects.forEach((p,idx)=>{
+      const div = document.createElement('article');
+      div.className = 'project fade-in';
+      div.style.animationDelay = (idx*80) + 'ms';
+      div.innerHTML = `
+        <div style='display:flex;justify-content:space-between;align-items:start'>
+          <strong>${p.title}</strong>
+          <div class='meta'>${p.tech.slice(0,2).join(' • ')}${p.tech.length>2? ' • more':''}</div>
+        </div>
+        <p>${p.desc}</p>
+        <div style='margin-top:auto;display:flex;gap:8px;align-items:center'>
+          <a class='btn' href='${p.url}'>View</a>
+          <div class='muted' style='font-size:13px;margin-left:auto'>Case study</div>
+        </div>
+      `;
+      projectsGrid.appendChild(div);
+    });
+
+    const skillsList = document.getElementById('skillsList');
+    PROFILE.skills.forEach(s=>{
+      const sp = document.createElement('div'); sp.className='skill fade-in'; sp.textContent=s; skillsList.appendChild(sp);
+    });
+
+    // Theme toggle (dark/light) with persistence
+    const themeToggle = document.getElementById('themeToggle');
+    const root = document.documentElement;
+    function setTheme(t){
+      if(t==='light') root.setAttribute('data-theme','light'); else root.removeAttribute('data-theme');
+      themeToggle.textContent = t==='light' ? '☀️' : '🌙';
+      themeToggle.setAttribute('aria-pressed', t==='light');
+      localStorage.setItem('ni_theme', t);
+    }
+    const saved = localStorage.getItem('ni_theme') || (window.matchMedia('(prefers-color-scheme:light)').matches ? 'light' : 'dark');
+    setTheme(saved);
+    themeToggle.addEventListener('click', ()=> setTheme(localStorage.getItem('ni_theme') === 'light' ? 'dark' : 'light'));
+
+    // Resume download (placeholder) — replace URL if you host a resume.pdf
+    document.getElementById('downloadResume').addEventListener('click', ()=>{
+      const resumeUrl = 'resume.pdf'; // change to actual resume path
+      // try to download; fallback opens in new tab
+      const a = document.createElement('a'); a.href = resumeUrl; a.download = resumeUrl; document.body.appendChild(a); a.click(); a.remove();
+    });
+
+    // Simple contact form handler: opens mail client if available
+    const contactForm = document.getElementById('contactForm');
+    contactForm.addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const name = document.getElementById('nameInput').value.trim();
+      const email = document.getElementById('emailInput').value.trim();
+      const message = document.getElementById('messageInput').value.trim();
+      if(!name||!email||!message){
+        alert('Please fill all fields.');
+        return;
+      }
+      // mailto fallback
+      const subject = encodeURIComponent('Portfolio contact from ' + name);
+      const body = encodeURIComponent('Name: '+name+'\nEmail: '+email+'\n\n'+message);
+      window.location.href = `mailto:${PROFILE.email}?subject=${subject}&body=${body}`;
+    });
+
+    // Simple prefers-reduced-motion respect
+    if(window.matchMedia('(prefers-reduced-motion:reduce)').matches){
+      document.querySelectorAll('.fade-in').forEach(el=>el.style.animation='none');
+    }
+
+    // Accessibility: focus outline for keyboard users only
+    (function(){
+      function handleFirstTab(e){
+        if(e.key === 'Tab'){
+          document.body.classList.add('show-focus');
+          window.removeEventListener('keydown', handleFirstTab);
+        }
+      }
+      window.addEventListener('keydown', handleFirstTab);
+    })();
+
+  </script>
+</body>
+  </html>
+  
